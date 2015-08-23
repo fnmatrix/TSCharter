@@ -13,16 +13,6 @@ interface Label
     getColor(): Color.Color;
 }
 
-interface IPerfRun {
-    x: Date;
-    y: number;
-}
-
-interface IPerfDataSeries {
-    desc: string;
-    data: IPerfRun[];
-}
-
 module Chart
 {
     class ChartLabel implements Label
@@ -65,8 +55,20 @@ module Chart
         public xAxisLabel: ChartLabel;
         public yAxisLabel: ChartLabel;
         public zAcisLabel: ChartLabel;
+        private chartArea: any;
+        private ctx: CanvasRenderingContext2D; 
 
-        constructor(public element) { }
+        constructor()
+        {
+            // Setup Canvas
+            this.chartArea = <HTMLCanvasElement>document.createElement("canvas");
+            this.chartArea.width = this.Width;
+            this.chartArea.height = this.Height;
+            this.chartArea.style.border = "1px solid black";
+
+            // Draw Canvas Area
+            document.body.appendChild(this.chartArea);
+        }
 
         public set Width(width: number) {
             this.chartWidth = width;
@@ -115,30 +117,20 @@ module Chart
         public get ChartYAxis(): string {
             return this.yAxisLabel.getText();
         }
-    }
 
-    export class Bar extends Base
-    {
-        public element: ID3Selection;
-        public legendItemHeight = 30;
-        public colors = ['rgb(0, 113, 188)', 'rgb(0, 174, 239)', 'rgb(145, 0, 145)'];
-        public xAxisHashHeight = 10;
-        public layout = 'wiggle';
-
-        constructor(element: ID3Selection)
+        public draw(chart: Chart.Base)
         {
-            super(element);
-            this.element = element;
-        }
-
-        public render()
-        {
-            var x = d3.scale.linear().domain([0, 10]).range([0, this.chartWidth]);
-            var y = d3.scale.linear().domain([0, 10]).range([0, this.chartHeight]);
+            // Title
+            this.ctx.fillText(chart.chartTitle.getText(), 10, 20);
         }
     }
 }
 
 window.onload = () => {
     var el = document.getElementById('content');
+
+    var canvasChart = new Chart.Base();
+    canvasChart.chartTitle.setText("Test Chart");
+    canvasChart.chartTitle.setColor(Color.Color.prototype.setColor("blue"));
+    canvasChart.draw(canvasChart);
 };

@@ -1,0 +1,7 @@
+﻿module Styles
+{
+    interface IStyle
+    {
+        
+    }
+}
